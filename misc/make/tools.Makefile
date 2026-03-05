@@ -37,7 +37,7 @@ AIR := $(shell command -v air || echo "bin/air")
 air: bin/air ## Installs air (go file watcher)
 
 bin/air: VERSION := 1.49.0
-bin/air: GITHUB  := cosmtrek/air
+bin/air: GITHUB  := air-verse/air
 bin/air: ARCHIVE := air_$(VERSION)_$(OSTYPE)_$(ARCH).tar.gz
 bin/air: bin
 	@ printf "Install air... "
