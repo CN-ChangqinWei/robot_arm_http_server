@@ -5,6 +5,7 @@ services:
     container_name: article_management_api
     ports:
       - 9090:9090
+      - 9091:9091
     depends_on:
       mysql:
         condition: service_healthy
