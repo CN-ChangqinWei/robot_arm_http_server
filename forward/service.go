@@ -6,23 +6,23 @@ import (
 	"github.com/bxcodec/go-clean-arch/domain"
 )
 
-type ForwardMqtt interface {
+type ForwardRepository interface {
 	GetTopics(ctx context.Context) (res []domain.Forward, err error)
 	GetTopicInfo(ctx context.Context, topic string) (res domain.Forward, err error)
 }
 
 type Service struct {
-	forwardMqtt ForwardMqtt
+	forwardRepository ForwardRepository
 }
 
-func NewService(fMqtt ForwardMqtt) *Service {
+func NewService(repo ForwardRepository) *Service {
 	return &Service{
-		forwardMqtt: fMqtt,
+		forwardRepository: repo,
 	}
 }
 
 func (s *Service) GetTopics(ctx context.Context) (res []domain.Forward, err error) {
-	res, err = s.forwardMqtt.GetTopics(ctx)
+	res, err = s.forwardRepository.GetTopics(ctx)
 	if err != nil {
 		return
 	}
@@ -30,7 +30,7 @@ func (s *Service) GetTopics(ctx context.Context) (res []domain.Forward, err erro
 }
 
 func (s *Service) GetTopicInfo(ctx context.Context, topic string) (res domain.Forward, err error) {
-	res, err = s.forwardMqtt.GetTopicInfo(ctx, topic)
+	res, err = s.forwardRepository.GetTopicInfo(ctx, topic)
 	if err != nil {
 		return
 	}
