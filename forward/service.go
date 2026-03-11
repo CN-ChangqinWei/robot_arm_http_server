@@ -1,18 +1,16 @@
 package forward
 
 import (
-	"context"
-
 	"github.com/bxcodec/go-clean-arch/domain"
 )
 
 type ForwardRepository interface {
-	GetTopics(ctx context.Context) (res []domain.Forward, err error)
-	GetTopicInfo(ctx context.Context, topic string) (res domain.Forward, err error)
-	AddTopic(ctx context.Context, topic string) (err error)
-	DelTopic(ctx context.Context, topic string) (err error)
-	AddSubscriber(ctx context.Context, topic string, clientId string) (err error)
-	DelSubscriber(ctx context.Context, topic string, clientId string) (err error)
+	GetTopics() (res []domain.Forward, err error)
+	GetTopicInfo(topic string) (res domain.Forward, err error)
+	AddTopic(topic string, publisher string) (err error)
+	DelTopic(topic string) (err error)
+	AddSubscriber(topic string, clientId string) (err error)
+	DelSubscriber(topic string, clientId string) (err error)
 }
 
 type Service struct {
@@ -25,39 +23,39 @@ func NewService(repo ForwardRepository) *Service {
 	}
 }
 
-func (s *Service) GetTopics(ctx context.Context) (res []domain.Forward, err error) {
-	res, err = s.forwardRepository.GetTopics(ctx)
+func (s *Service) GetTopics() (res []domain.Forward, err error) {
+	res, err = s.forwardRepository.GetTopics()
 	if err != nil {
 		return
 	}
 	return
 }
 
-func (s *Service) GetTopicInfo(ctx context.Context, topic string) (res domain.Forward, err error) {
-	res, err = s.forwardRepository.GetTopicInfo(ctx, topic)
+func (s *Service) GetTopicInfo(topic string) (res domain.Forward, err error) {
+	res, err = s.forwardRepository.GetTopicInfo(topic)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func (s *Service) Subscribe(ctx context.Context, topic string, clientId string) (err error) {
-	err = s.forwardRepository.AddSubscriber(ctx, topic, clientId)
+func (s *Service) Subscribe(topic string, clientId string) (err error) {
+	err = s.forwardRepository.AddSubscriber(topic, clientId)
 
 	return
 }
-func (s *Service) Desubscribe(ctx context.Context, topic string, clientId string) (err error) {
+func (s *Service) Unsubscribe(topic string, clientId string) (err error) {
 
-	err = s.forwardRepository.DelSubscriber(ctx, topic, clientId)
+	err = s.forwardRepository.DelSubscriber(topic, clientId)
 	return
 }
 
-func (s *Service) Publish(ctx context.Context, topic string) (err error) {
-	err = s.forwardRepository.AddTopic(ctx, topic)
+func (s *Service) Connect(topic string, publisher string) (err error) {
+	err = s.forwardRepository.AddTopic(topic, publisher)
 	return
 }
 
-func (s *Service) Depublish(ctx context.Context, topic string) (err error) {
-	err = s.forwardRepository.DelTopic(ctx, topic)
+func (s *Service) Disconnect(topic string) (err error) {
+	err = s.forwardRepository.DelTopic(topic)
 	return
 }

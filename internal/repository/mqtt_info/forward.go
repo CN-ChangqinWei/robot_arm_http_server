@@ -1,8 +1,6 @@
 package mqttinfo
 
 import (
-	"context"
-
 	"github.com/bxcodec/go-clean-arch/domain"
 	mqtt "github.com/mochi-mqtt/server/v2"
 )
@@ -13,7 +11,7 @@ type ForwardRepository struct {
 	Server *mqtt.Server
 }
 
-func (f *ForwardRepository) GetTopics(ctx context.Context) (res []domain.Forward, err error) {
+func (f *ForwardRepository) GetTopics() (res []domain.Forward, err error) {
 	if len(topics) == 0 {
 		return
 	}
@@ -24,7 +22,7 @@ func (f *ForwardRepository) GetTopics(ctx context.Context) (res []domain.Forward
 	}
 	return
 }
-func (f *ForwardRepository) GetTopicInfo(ctx context.Context, topic string) (res domain.Forward, err error) {
+func (f *ForwardRepository) GetTopicInfo(topic string) (res domain.Forward, err error) {
 
 	for _, t := range topics {
 		if t.Topic == topic {
