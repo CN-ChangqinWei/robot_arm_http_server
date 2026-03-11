@@ -81,6 +81,11 @@ func main() {
 	rest.NewArticleHandler(e, svc)
 
 	// Start Server
+
+	MqttInit()
+
+	go MqttServerStart()
+
 	address := os.Getenv("SERVER_ADDRESS")
 	if address == "" {
 		address = defaultAddress
