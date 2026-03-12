@@ -12,6 +12,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 
+	"github.com/bxcodec/go-clean-arch/health"
 	mysqlRepo "github.com/bxcodec/go-clean-arch/internal/repository/mysql"
 
 	"github.com/bxcodec/go-clean-arch/article"
@@ -78,8 +79,9 @@ func main() {
 
 	// Build service Layer
 	svc := article.NewService(articleRepo, authorRepo)
+	svcHealth := health.NewService()
 	rest.NewArticleHandler(e, svc)
-
+	rest.NewHealthHandler(e, svcHealth)
 	// Start Server
 
 	MqttInit()
