@@ -23,6 +23,15 @@ func NewForwardHandler(server *mqtt.Server, svc *forward.Service) *ForwardHandle
 	return handler
 }
 
+// Provides 声明该钩子提供哪些功能
+func (h *ForwardHandler) Provides(b byte) bool {
+	switch b {
+	case mqtt.OnConnect, mqtt.OnDisconnect, mqtt.OnSubscribe, mqtt.OnUnsubscribe:
+		return true
+	}
+	return false
+}
+
 // ID returns the unique identifier of the hook.
 func (h *ForwardHandler) ID() string {
 	return "forward-hook"
