@@ -2,6 +2,7 @@ package forward
 
 import (
 	"github.com/bxcodec/go-clean-arch/domain"
+	mqtt "github.com/mochi-mqtt/server/v2"
 )
 
 type ForwardRepository interface {
@@ -15,6 +16,7 @@ type ForwardRepository interface {
 
 type Service struct {
 	forwardRepository ForwardRepository
+	Server            *mqtt.Server
 }
 
 func NewService(repo ForwardRepository) *Service {
@@ -58,4 +60,12 @@ func (s *Service) Connect(topic string, publisher string) (err error) {
 func (s *Service) Disconnect(topic string) (err error) {
 	err = s.forwardRepository.DelTopic(topic)
 	return
+}
+
+// SendMessage 使用 MQTT 服务发送消息到指定 topic
+func (s *Service) SendMessage(topic string, msg string) error {
+	if s.Server == nil {
+		return nil
+	}
+	return s.Server.Publish(topic, []byte(msg), false, 0)
 }

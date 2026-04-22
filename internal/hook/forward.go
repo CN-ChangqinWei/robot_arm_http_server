@@ -2,6 +2,7 @@ package hook
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strings"
 
@@ -151,21 +152,33 @@ func (h *ForwardHandler) OnPublish(cl *mqtt.Client, pk packets.Packet) (packets.
 	return pk, nil
 }
 
-// extractProtocol 从 JSON payload 中提取 protocol 字段
+// extractProtocol 从 JSON payload 中提取 protocol 字段（支持 string 和 number 类型）
 func extractProtocol(payload []byte) (string, error) {
 	var data map[string]interface{}
 	if err := json.Unmarshal(payload, &data); err != nil {
 		return "", err
 	}
 
-	protocol, ok := data["protocol"].(string)
+	protocolVal, ok := data["protocol"]
 	if !ok {
 		// 尝试从 Protocol（大写）获取
-		protocol, ok = data["Protocol"].(string)
+		protocolVal, ok = data["Protocol"]
 		if !ok {
 			return "", nil
 		}
 	}
 
-	return strings.TrimSpace(protocol), nil
+	// 处理 string 类型
+	if protocolStr, ok := protocolVal.(string); ok {
+		return strings.TrimSpace(protocolStr), nil
+	}
+
+	// 处理 number 类型（float64 是 JSON number 的默认类型）
+	if protocolNum, ok := protocolVal.(float64); ok {
+		// 转换为整数再转字符串，避免小数点
+		return fmt.Sprintf("%.0f", protocolNum), nil
+	}
+
+	// 其他类型直接转为字符串
+	return fmt.Sprint(protocolVal), nil
 }
