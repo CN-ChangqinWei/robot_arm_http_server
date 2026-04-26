@@ -11,7 +11,7 @@ const (
 
 type MotorDomain struct { //
 	Protocol int `json:"protocol"`
-	Id       int `json:"protidocol"`
+	Id       int `json:"id"`
 	PowerOn  int `json:"powerOn"`
 	//位置角度量(一般舵机)
 	NumAngel int `json:"numAngel"`

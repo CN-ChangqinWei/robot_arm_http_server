@@ -129,6 +129,11 @@ func (h *ForwardHandler) OnPublish(cl *mqtt.Client, pk packets.Packet) (packets.
 	topic := pk.TopicName
 	payload := pk.Payload
 
+	// 只有 topic 以 "pub" 结尾才进行协议解析
+	if !strings.HasSuffix(topic, "pub") {
+		return pk, nil
+	}
+
 	log.Printf("OnPublish: topic=%s, client=%s, payload=%s", topic, clientID, string(payload))
 
 	// 解析 JSON 获取 protocol 字段

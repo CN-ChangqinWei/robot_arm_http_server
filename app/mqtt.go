@@ -13,10 +13,13 @@ import (
 )
 
 var svcMqtt *mqtt.Server
+var mqttOpt *mqtt.Options
 
 func MqttInit() (res error) {
-
-	svcMqtt = mqtt.New(nil)
+	mqttOpt = &mqtt.Options{
+		InlineClient: true,
+	}
+	svcMqtt = mqtt.New(mqttOpt)
 	repo := mqttinfo.NewForwardRepository()
 	svc := forward.NewService(repo)
 	hook.NewForwardHandler(svcMqtt, svc)

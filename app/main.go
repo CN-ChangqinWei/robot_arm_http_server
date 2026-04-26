@@ -14,6 +14,7 @@ import (
 
 	"github.com/bxcodec/go-clean-arch/health"
 	mysqlRepo "github.com/bxcodec/go-clean-arch/internal/repository/mysql"
+	"github.com/bxcodec/go-clean-arch/motor"
 
 	"github.com/bxcodec/go-clean-arch/article"
 	"github.com/bxcodec/go-clean-arch/internal/rest"
@@ -80,12 +81,15 @@ func main() {
 	// Build service Layer
 	svc := article.NewService(articleRepo, authorRepo)
 	svcHealth := health.NewService()
+
 	rest.NewArticleHandler(e, svc)
 	rest.NewHealthHandler(e, svcHealth)
+
 	// Start Server
 
 	MqttInit()
-
+	svcMotor := motor.NewService(svcMqtt)
+	rest.NewHandler(e, svcMotor)
 	go MqttServerStart()
 
 	address := os.Getenv("SERVER_ADDRESS")
