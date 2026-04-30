@@ -4,14 +4,15 @@ curl -X POST http://localhost:9090/motor/control \
     "device_name": "dev0",
     "data": {
         "protocol": 2,
+        "id":0,
         "powerOn": 1,
-        "numAngel": 100,
+        "numAngel": 0,
         "denAngel": 180,
         "maxAngel": 360,
         "encode": 0,
         "spEncode": 0,
-        "pwmNum": 50,
-        "pwmDen": 100,
+        "pwmNum": 0,
+        "pwmDen": 0,
         "spNumAngel": 0,
         "spDenAngel": 0,
         "mode": 0

@@ -15,6 +15,7 @@ import (
 	"github.com/bxcodec/go-clean-arch/health"
 	mysqlRepo "github.com/bxcodec/go-clean-arch/internal/repository/mysql"
 	"github.com/bxcodec/go-clean-arch/motor"
+	"github.com/bxcodec/go-clean-arch/robot"
 
 	"github.com/bxcodec/go-clean-arch/article"
 	"github.com/bxcodec/go-clean-arch/internal/rest"
@@ -89,7 +90,10 @@ func main() {
 
 	MqttInit()
 	svcMotor := motor.NewService(svcMqtt)
+	svcRobot := robot.NewService(svcMqtt)
+	_ = svcRobot // 注册 robot 服务，如需使用可在此调用相关方法
 	rest.NewHandler(e, svcMotor)
+	rest.NewRobotHandler(e, svcRobot)
 	go MqttServerStart()
 
 	address := os.Getenv("SERVER_ADDRESS")
