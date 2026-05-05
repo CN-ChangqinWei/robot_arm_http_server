@@ -7,5 +7,6 @@ type RobotPosition struct {
 }
 
 type RobotMotionDomain struct {
+	Dev       string          `json:"dev"`
 	Positions []RobotPosition `json:"positions"`
 }

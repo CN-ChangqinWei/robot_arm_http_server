@@ -21,8 +21,9 @@ func NewRobotHandler(e *echo.Echo, service *robot.Service) *RobotHandler {
 	h := &RobotHandler{
 		Service: service,
 	}
-	// 绑定 POST /robot/control 路由
+	// 绑定 POST 路由
 	e.POST("/robot/control", h.ControlRobot)
+	e.POST("/robot/motion", h.SendMotion)
 	return h
 }
 
@@ -42,6 +43,26 @@ func (h *RobotHandler) ControlRobot(c echo.Context) error {
 	if err := h.Service.SetRobotStatus(topic, req.Data); err != nil {
 		return c.JSON(http.StatusInternalServerError, domain.MotorDomainReply{
 			Message: "Failed to send message: " + err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, domain.MotorDomainReply{
+		Message: "OK",
+	})
+}
+
+// SendMotion 处理机器人运动轨迹请求
+func (h *RobotHandler) SendMotion(c echo.Context) error {
+	var req domain.RobotMotionDomain
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest, domain.MotorDomainReply{
+			Message: "Invalid request: " + err.Error(),
+		})
+	}
+
+	if err := h.Service.SendMotionPositions(req); err != nil {
+		return c.JSON(http.StatusInternalServerError, domain.MotorDomainReply{
+			Message: "Failed to send motion: " + err.Error(),
 		})
 	}
 
